@@ -1,0 +1,17 @@
+spring:
+  datasource:
+    url: jdbc:sqlserver://localhost:1434;databaseName=retail_db_dev;encrypt=true;trustServerCertificate=true
+    username: sa
+    password: YourPassword123!
+
+# ========== LOGGING ==========
+logging:
+  level:
+    root: INFO
+    com.retail: DEBUG
+    org.springframework: INFO
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    com.retail.api.filter: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %highlight(%-5level) %cyan(%logger{36}) - %msg%n"

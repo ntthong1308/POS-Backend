@@ -1,0 +1,72 @@
+# =============================================
+# Docker ignore file
+# =============================================
+
+# Maven
+**/target/
+**/.mvn/
+mvnw
+mvnw.cmd
+.mvn/
+
+# IDE
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+.classpath
+.project
+.settings/
+bin/
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# Documentation
+docs/
+*.md
+!README.md
+
+# Scripts
+scripts/
+
+# Test files
+**/src/test/
+**/*Test.java
+**/*Tests.java
+
+# Logs
+*.log
+logs/
+
+# OS
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# Docker
+Dockerfile*
+docker-compose*.yml
+.dockerignore
+
+# Environment
+.env
+.env.local
+*.env
+
+# Build artifacts
+*.jar
+*.war
+*.ear
+*.class
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+

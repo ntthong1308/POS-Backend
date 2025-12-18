@@ -1,0 +1,245 @@
+/* Print-specific styles */
+@media print {
+  /* Reset body and html */
+  html, body {
+    width: 100% !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: white !important;
+  }
+  
+  /* Hide ALL elements by default */
+  * {
+    visibility: hidden;
+  }
+  
+  /* Show ONLY print content and its children */
+  .invoice-print-content,
+  .invoice-print-content * {
+    visibility: visible !important;
+  }
+  
+  /* Hide specific UI elements */
+  nav:not(.invoice-print-content nav),
+  header,
+  .sidebar,
+  [class*="sidebar"],
+  [class*="Sidebar"],
+  [class*="logo"],
+  [class*="Logo"],
+  aside,
+  [class*="aside"],
+  [class*="Aside"],
+  button,
+  .no-print,
+  .invoice-content,
+  [class*="toolbar"],
+  [class*="Toolbar"],
+  [class*="header"],
+  [class*="Header"],
+  [role="toolbar"],
+  [role="banner"],
+  [role="navigation"],
+  .p-6 > div:first-child,
+  [class*="border-r"]:not(.invoice-print-content [class*="border-r"]) {
+    display: none !important;
+    visibility: hidden !important;
+  }
+  
+  /* Hide DashboardLayout sidebar and header */
+  body > #root > div.flex > div:first-child {
+    display: none !important;
+    visibility: hidden !important;
+  }
+  
+  body > #root > div.flex > div:last-child > header,
+  body > #root > div.flex > div:last-child > div:first-child {
+    display: none !important;
+    visibility: hidden !important;
+  }
+  
+  /* Show print content - must be visible and centered */
+  .invoice-print-content {
+    display: block !important;
+    position: static !important;
+    left: auto !important;
+    top: auto !important;
+    width: 90mm !important;
+    max-width: 90mm !important;
+    padding: 0 !important;
+    box-sizing: border-box !important;
+    font-family: Arial, sans-serif !important;
+    font-size: 10px !important;
+    line-height: 1.2 !important;
+    color: #000 !important;
+    background: white !important;
+    margin: 0 auto !important;
+    page-break-after: avoid !important;
+    page-break-inside: avoid !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+  
+  /* Ensure all children are visible */
+  .invoice-print-content * {
+    visibility: visible !important;
+    color: #000 !important;
+    opacity: 1 !important;
+  }
+
+  /* Reset page margins */
+  @page {
+    margin: 4mm;
+    size: 98mm 148mm;
+  }
+
+  /* Invoice header - centered */
+  .invoice-print-header {
+    text-align: center;
+    margin-bottom: 4px;
+    width: 100%;
+    page-break-inside: avoid;
+  }
+
+  .invoice-print-header h1 {
+    font-size: 12px;
+    font-weight: bold;
+    margin: 0;
+    text-transform: uppercase;
+    line-height: 1.2;
+  }
+
+  /* Invoice info - 2 columns layout */
+  .invoice-info-container {
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 4px;
+    page-break-inside: avoid;
+  }
+
+  .invoice-info-left,
+  .invoice-info-right {
+    width: 50%;
+    font-size: 9px;
+    line-height: 1.3;
+  }
+
+  .invoice-info-left {
+    padding-right: 4px;
+  }
+
+  .invoice-info-right {
+    padding-left: 4px;
+  }
+
+  .sub-info {
+    margin-bottom: 1px;
+    font-size: 9px;
+    line-height: 1.3;
+  }
+
+  /* Items table */
+  .table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 9px;
+    table-layout: fixed;
+    margin-bottom: 4px;
+    page-break-inside: avoid;
+  }
+
+  .table th {
+    text-align: left;
+    padding: 2px 0;
+    font-weight: bold;
+    border-bottom: 1px solid #000;
+    font-size: 9px;
+    line-height: 1.2;
+  }
+
+  .table th:nth-child(3),
+  .table td:nth-child(3) {
+    text-align: center;
+  }
+
+  .table th:nth-child(4),
+  .table th:nth-child(5),
+  .table td:nth-child(4),
+  .table td:nth-child(5) {
+    text-align: right;
+  }
+
+  .table td {
+    padding: 2px 0;
+    font-size: 9px;
+    border-bottom: 1px solid #000;
+    vertical-align: top;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    line-height: 1.2;
+  }
+
+  /* Payment summary - totals class */
+  .totals {
+    margin-top: 4px;
+    margin-bottom: 4px;
+    font-size: 9px;
+    line-height: 1.3;
+    width: 100%;
+    page-break-inside: avoid;
+  }
+
+  .totals > div {
+    margin-bottom: 1px;
+  }
+
+  /* Center class for store info and promotion */
+  .center {
+    text-align: center;
+    font-size: 9px;
+    line-height: 1.3;
+    page-break-inside: avoid;
+  }
+
+  /* QR box */
+  .qr-box {
+    width: 40mm;
+    height: 40mm;
+    border: 1px dashed #333;
+    margin: 4px auto;
+    background-color: #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 8px;
+    page-break-inside: avoid;
+  }
+
+  /* Footer */
+  .footer {
+    font-size: 9px;
+    text-align: center;
+    line-height: 1.3;
+    margin-top: 4px;
+    page-break-inside: avoid;
+  }
+}
+
+/* Screen styles - hide print content on screen but keep in DOM */
+@media screen {
+  .invoice-print-content {
+    position: absolute !important;
+    left: -9999px !important;
+    top: 0 !important;
+    width: 90mm;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+    font-size: 11px;
+    line-height: 1.4;
+    color: #000;
+    background: white;
+    /* Keep it in DOM but off-screen */
+  }
+}

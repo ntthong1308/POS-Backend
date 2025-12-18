@@ -1,0 +1,179 @@
+spring:
+  application:
+    name: retail-platform
+
+  datasource:
+    url: jdbc:sqlserver://localhost:1434;databaseName=retail_db;encrypt=true;trustServerCertificate=true
+    username: sa
+    password: 123456
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+    # ========== HIKARICP CONNECTION POOLING ==========
+    hikari:
+      # Số lượng kết nối tối đa trong pool
+      maximum-pool-size: 20
+      # Số lượng kết nối tối thiểu luôn được duy trì
+      minimum-idle: 5
+      # Thời gian chờ tối đa để lấy connection từ pool (ms)
+      connection-timeout: 30000
+      # Thời gian chờ tối đa để pool shutdown (ms)
+      idle-timeout: 600000
+      # Thời gian sống tối đa của connection (ms) - 30 phút
+      max-lifetime: 1800000
+      # Kiểm tra connection còn sống trước khi sử dụng
+      connection-test-query: SELECT 1
+      # Tên của connection pool (hiển thị trong logs)
+      pool-name: RetailPlatformHikariPool
+      # Cho phép leak detection (phát hiện connection bị rò rỉ)
+      leak-detection-threshold: 60000
+      # Đăng ký metrics với JMX
+      register-mbeans: true
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.SQLServerDialect
+        format_sql: true
+        use_sql_comments: true
+        # ========== BATCH PROCESSING OPTIMIZATION ==========
+        # Kích thước batch cho insert/update/delete operations
+        jdbc.batch_size: 20
+        # Bật batch processing cho inserts
+        jdbc.batch_versioned_data: true
+        # Tối ưu hóa order inserts để tận dụng batch
+        order_inserts: true
+        order_updates: true
+        # ========== QUERY OPTIMIZATION ==========
+        # Số lượng entities được load cùng lúc cho @BatchSize
+        default_batch_fetch_size: 20
+        # Sử dụng second-level cache
+        cache.use_second_level_cache: false
+        # Statistics cho monitoring
+        generate_statistics: false
+    open-in-view: false
+
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    locations: classpath:db/migration
+    ignore-missing-migrations: true
+    ignore-ignored-migrations: true
+    validate-on-migrate: false
+    validate-migration-naming: false
+
+  # ========== REDIS CONFIGURATION ==========
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      timeout: 2000ms
+      jedis:
+        pool:
+          max-active: 8
+          max-idle: 8
+          min-idle: 0
+          max-wait: -1ms
+      connect-timeout: 2000ms
+      client-type: jedis
+
+  # ========== CACHE CONFIGURATION ==========
+  cache:
+    type: redis
+    redis:
+      time-to-live: 1800000  # 30 minutes in milliseconds
+      cache-null-values: false  
+      key-prefix: "retail:"
+      use-key-prefix: true
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+server:
+  port: 8081
+  servlet:
+    context-path: /
+
+# ========== APPLICATION CONFIGURATION ==========
+app:
+  # File Upload Configuration
+  file:
+    upload-dir: uploads  # Thư mục lưu file upload (relative to project root)
+  
+  # JWT Configuration
+  jwt:
+    secret: U2VjdXJlSldUU2VjcmV0S2V5Rm9yUmV0YWlsUGxhdGZvcm1TeXN0ZW0yMDI1VmVyeVNlY3VyZVN0cmluZ1dpdGhFbm91Z2hMZW5ndGg=
+    exp-min: 1440  # 24 hours
+  
+  # VNPay Configuration
+  vnpay:
+    tmn-code: X8VWWPJ2  # Terminal ID
+    hash-secret: UL37T5AM49OJ8KAIREZZJMD3YUD0XUN6  # Secret Key
+    url: https://sandbox.vnpayment.vn/paymentv2/vpcpay.html  # Payment URL
+    return-url: http://localhost:8081/api/v1/payments/vnpay/return  # Backend Return URL (VNPay gọi về đây để verify)
+    frontend-return-url: http://localhost:5173/payments/vnpay/return  # Frontend Return URL (redirect user về đây sau khi verify)
+    ipn-url: http://localhost:8081/api/v1/payments/vnpay/ipn  # IPN callback URL
+
+# ========== LOGGING ==========
+logging:
+  level:
+    root: INFO
+    com.retail: DEBUG
+    org.springframework: WARN
+    org.springframework.security: DEBUG
+    org.hibernate: WARN
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    com.zaxxer.hikari: INFO
+    org.flywaydb: INFO
+    com.retail.api.filter: DEBUG  # Request logging filter
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+  file:
+    path: logs
+
+# Actuator
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+      base-path: /actuator
+  endpoint:
+    health:
+      show-details: always
+      # Cấu hình health groups - chỉ database là quan trọng
+      group:
+        custom:
+          include: db,ping
+    metrics:
+      enabled: true
+  health:
+    # Tắt diskSpace health check (không quan trọng cho development)
+    diskspace:
+      enabled: false
+    # Tắt Redis health check để không làm DOWN overall status
+    # Redis chỉ là cache, không quan trọng cho health check
+    redis:
+      enabled: false
+    # Config để các component DOWN không làm DOWN overall
+    circuitbreakers:
+      enabled: false
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+    tags:
+      application: ${spring.application.name}
+
+# Springdoc OpenAPI
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: alpha

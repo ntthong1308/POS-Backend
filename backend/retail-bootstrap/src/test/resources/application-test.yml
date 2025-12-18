@@ -1,0 +1,48 @@
+spring:
+  application:
+    name: retail-platform-test
+
+  datasource:
+    # Testcontainers sẽ override các giá trị này
+    url: jdbc:tc:sqlserver:2022-latest:///testdb
+    driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
+    username: sa
+    password: Test@123456
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.SQLServerDialect
+        format_sql: true
+        use_sql_comments: false
+    open-in-view: false
+
+  flyway:
+    enabled: false  # Disable Flyway cho unit tests
+
+  sql:
+    init:
+      mode: never
+
+# JWT Configuration for Tests
+app:
+  jwt:
+    secret: TestSecretKeyForJunitTestsOnly123456789012345678901234567890123456789012345678901234567890
+    exp-min: 60
+
+# Logging
+logging:
+  level:
+    com.retail: INFO
+    org.springframework.test: WARN
+    org.testcontainers: INFO
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+  pattern:
+    console: "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+
+# Disable banner for tests
+spring.main.banner-mode: off
